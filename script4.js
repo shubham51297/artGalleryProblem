@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
           drawPoint(point);
       }
   });
-
   document.getElementById("triangulate").addEventListener("click", () => {
       if (!complete) {
           // alert("Please complete the polygon first.");
@@ -71,12 +70,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function drawTriangle(triangle) {
-      ctx.beginPath();
-      ctx.moveTo(triangle[0].x, triangle[0].y);
-      ctx.lineTo(triangle[1].x, triangle[1].y);
-      ctx.lineTo(triangle[2].x, triangle[2].y);
-      ctx.closePath();
-      ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(triangle[0].x, triangle[0].y);
+    ctx.lineTo(triangle[1].x, triangle[1].y);
+    ctx.lineTo(triangle[2].x, triangle[2].y);
+    ctx.closePath();
+    ctx.strokeStyle = "red"; // Set the stroke style to white
+    ctx.stroke();
+    ctx.strokeStyle = "red"; // 
 
   }
 
@@ -157,14 +159,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function redrawPolygon() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-      for (let i = 0; i < points.length - 1; i++) {
-          drawLine(points[i], points[i + 1]);
-          drawPoint(points[i]);
-      }
-      drawLine(points[0], points[points.length - 1]);
-      drawPoint(points[points.length - 1]);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = "red"; // Set the stroke color to red
+
+    for (let i = 0; i < points.length - 1; i++) {
+        drawLine(points[i], points[i + 1]);
+        drawPoint(points[i]);
+    }
+    drawLine(points[0], points[points.length - 1]);
+    drawPoint(points[points.length - 1]);
   }
   
   
@@ -257,11 +261,24 @@ function threeColorGraph(triangulatedFeatures) {
 
 
   function drawPoint(point) {
-      const radius = 2;
-      ctx.fillStyle = "blue";
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
-      ctx.fill();
+    const radius = 4;
+
+  const gradient = ctx.createRadialGradient(
+    point.x, point.y, 1, point.x, point.y, radius
+  );
+  gradient.addColorStop(0, "#0074d9");
+  gradient.addColorStop(1, "#003d67");
+
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+  ctx.fill();
+
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+  ctx.stroke();
   }
 
   function drawLine(p1, p2) {
@@ -307,22 +324,39 @@ function threeColorGraph(triangulatedFeatures) {
 
   function drawColoredPoint(point, coloredVertices) {
 
-      const color = coloredVertices.get(JSON.stringify([point.x, point.y]));
+    const color = coloredVertices.get(JSON.stringify([point.x, point.y]));
+  const radius = 8;
 
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, 8, 0, 2 * Math.PI);
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+  ctx.shadowBlur = 5;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 2;
 
-      if (color === 1) {
-          ctx.fillStyle = "red";
-      } else if (color === 2) {
-          ctx.fillStyle = "green";
-      } else if (color === 3) {
-          ctx.fillStyle = "blue";
-      } else {
-          ctx.fillStyle = "black";
-      }
+  ctx.beginPath();
+  ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
 
-      ctx.fill();
+  if (color === 1) {
+    ctx.fillStyle = "#ff4136";
+  } else if (color === 2) {
+    ctx.fillStyle = "#2ecc40";
+  } else if (color === 3) {
+    ctx.fillStyle = "#0074d9";
+  } else {
+    ctx.fillStyle = "#111111";
+  }
+
+  ctx.fill();
+
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+  ctx.stroke();
+
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
   }
 
 });
