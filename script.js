@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 y: coord[1],
             }));
             drawTriangle(trianglePoints);
-            await delay(500); // Wait for 0.5 seconds before drawing the next triangle
+            await delay(500);
         }
     }
     
@@ -82,10 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.lineTo(triangle[1].x, triangle[1].y);
         ctx.lineTo(triangle[2].x, triangle[2].y);
         ctx.closePath();
-        ctx.setLineDash([10, 10]);
         ctx.strokeStyle = "red"; // Set the stroke style to white
         ctx.stroke();
-        ctx.setLineDash([]);
     }
 
     document.getElementById("completePloy").addEventListener("click", () => {
